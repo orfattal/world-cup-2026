@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 מונדיאל FIFA 2026 - משחק ניחושים</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#071019;--surface:#0f1f35;--card:#162840;--card2:#1d3454;
+  --green:#22c55e;--gd:#16a34a;--gg:rgba(34,197,94,.15);
+  --gold:#fbbf24;--gl:#fde68a;
+  --text:#e2e8f0;--muted:#94a3b8;--border:#1e3a5f;
+  --red:#f87171;--blue:#60a5fa;--orange:#fb923c;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;direction:rtl;min-height:100vh;line-height:1.5}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#051020 0%,#0a2e16 50%,#051020 100%);border-bottom:2px solid var(--green);padding:.75rem 1rem;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(34,197,94,.2)}
+.hdr h1{font-size:1.4rem;font-weight:800;color:var(--green);text-shadow:0 0 20px rgba(34,197,94,.5)}
+.hdr .sub{color:var(--muted);font-size:.8rem;margin-top:.1rem}
+
+/* LEADERBOARD */
+.lb{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin:.75rem;overflow:hidden}
+.lb-title{background:linear-gradient(90deg,var(--gd),#064e3b);padding:.6rem 1rem;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:.5rem}
+.lb-row{display:flex;align-items:center;padding:.65rem 1rem;border-bottom:1px solid var(--border);gap:.6rem;cursor:pointer;transition:background .2s}
+.lb-row:last-child{border-bottom:none}
+.lb-row.leader{background:linear-gradient(90deg,rgba(251,191,36,.08),transparent)}
+.lb-row:hover{background:var(--card)}
+.rank{font-weight:700;font-size:1.1rem;min-width:2rem;text-align:center;color:var(--muted)}
+.rank.r1{color:var(--gold)}.rank.r2{color:#c0c0c0}.rank.r3{color:#cd7f32}
+.pname{flex:1;font-weight:600;font-size:.9rem}
+.edit-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:.15rem .4rem;font-size:.72rem;cursor:pointer;transition:all .2s}
+.edit-btn:hover{border-color:var(--green);color:var(--green)}
+.boosts-disp{font-size:.8rem;letter-spacing:1px;min-width:3.5rem;text-align:center}
+.ppts{font-weight:700;font-size:1rem;color:var(--green);min-width:4rem;text-align:left}
+
+/* FILTERS */
+.filters{margin:0 .75rem .75rem;display:flex;flex-direction:column;gap:.6rem}
+.gtabs{display:flex;gap:.3rem;overflow-x:auto;padding-bottom:.2rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.gtab{flex-shrink:0;padding:.35rem .65rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+.gtab:hover{border-color:var(--green);color:var(--text)}
+.gtab.active{background:var(--green);border-color:var(--green);color:#000}
+.stabs{display:flex;gap:.4rem}
+.stab{flex:1;padding:.45rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:.8rem;font-weight:600;text-align:center;transition:all .2s}
+.stab.active{background:var(--card);border-color:var(--green);color:var(--text)}
+
+/* MATCHES */
+.mc{padding:0 .75rem 2rem;display:flex;flex-direction:column;gap:.7rem}
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.mcard:hover{border-color:rgba(34,197,94,.35)}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.3rem}
+.mmeta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.gbadge{background:var(--gd);color:#fff;border-radius:4px;padding:.08rem .35rem;font-size:.68rem;font-weight:700}
+.sbadge{font-size:.68rem;padding:.12rem .45rem;border-radius:20px;font-weight:600}
+.sbadge.played{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.sbadge.upcoming{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+
+/* TEAMS ROW */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;gap:.5rem;direction:ltr}
+.team{display:flex;flex-direction:column;align-items:center;gap:.2rem;flex:1;min-width:0}
+.tflag{font-size:2rem;line-height:1}
+.tname{font-weight:700;font-size:.78rem;text-align:center;direction:rtl;word-break:keep-all}
+.score-box{display:flex;flex-direction:column;align-items:center;gap:.15rem;flex-shrink:0}
+.score-nums{display:flex;align-items:center;gap:.4rem;font-size:2rem;font-weight:900;color:var(--green);direction:ltr}
+.score-sep{color:var(--muted);font-size:1.5rem}
+.vs-txt{font-size:.85rem;color:var(--muted);font-weight:600}
+
+/* PREDICTIONS */
+.psec{padding:0 .75rem .75rem}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media(max-width:400px){.pgrid{grid-template-columns:1fr}}
+.pitem{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem}
+.pitem.boosted{border-color:var(--orange);background:rgba(251,146,60,.06)}
+.pplayername{font-size:.78rem;font-weight:700;color:var(--green);margin-bottom:.35rem;display:flex;align-items:center;gap:.25rem}
+.psc{font-size:1.15rem;font-weight:700;margin-bottom:.2rem;direction:ltr;text-align:center}
+.ppts{font-size:.72rem;color:var(--muted)}
+.ppts.exact{color:var(--green);font-weight:700}
+.ppts.draw{color:var(--blue);font-weight:700}
+.ppts.win{color:var(--gold);font-weight:700}
+.ppts.zero{color:var(--red)}
+
+/* PREDICTION FORM */
+.pform{display:flex;flex-direction:column;gap:.35rem}
+.pform-name{font-size:.78rem;font-weight:700;color:var(--green);display:flex;align-items:center;justify-content:space-between}
+.boost-info{font-size:.65rem;color:var(--orange)}
+.score-inp-row{display:flex;align-items:center;gap:.3rem;direction:ltr;justify-content:center}
+.sc-ctrl{display:flex;align-items:center;gap:.2rem}
+.sc-btn{width:1.8rem;height:1.8rem;border-radius:50%;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;line-height:1;padding:0}
+.sc-btn:hover{border-color:var(--green);background:var(--gd);color:#fff}
+.sc-num{width:2.4rem;height:2.4rem;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1.2rem;font-weight:700;cursor:text}
+.sc-num:focus{outline:none;border-color:var(--green)}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+.sc-sep{color:var(--muted);font-size:1.2rem;font-weight:700;padding:0 .1rem}
+.form-actions{display:flex;gap:.35rem;align-items:center}
+.boost-btn{display:flex;align-items:center;gap:.2rem;padding:.3rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.72rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.boost-btn.active{border-color:var(--orange);background:rgba(251,146,60,.15);color:var(--orange)}
+.boost-btn:disabled{opacity:.35;cursor:not-allowed}
+.save-btn{padding:.35rem .7rem;background:var(--gd);border:none;border-radius:6px;color:#fff;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s;white-space:nowrap}
+.save-btn:hover{background:var(--green)}
+.save-btn.saved{background:#065f46}
+
+/* GROUP HEADER */
+.gsec-hdr{font-size:.95rem;font-weight:700;color:var(--green);padding:.4rem 0;border-bottom:1px solid var(--border);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.empty .ico{font-size:3rem;margin-bottom:.75rem}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:380px;margin:auto}
+.modal h3{margin-bottom:1rem;color:var(--green);font-size:1rem}
+.modal input{width:100%;padding:.7rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;margin-bottom:1rem;direction:rtl;font-family:inherit}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal-acts{display:flex;gap:.75rem}
+.btn-p{flex:1;padding:.7rem;background:var(--green);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem}
+.btn-s{flex:1;padding:.7rem;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:inherit;font-size:.9rem}
+
+/* INFO BTN */
+.info-btn{background:none;border:1.5px solid var(--green);color:var(--green);border-radius:50%;width:1.6rem;height:1.6rem;font-size:.85rem;font-weight:700;cursor:pointer;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.info-btn:hover{background:var(--green);color:#000}
+.hdr-top{display:flex;align-items:center;justify-content:center;gap:.6rem}
+
+/* HELP MODAL */
+.help-modal{max-width:420px}
+.help-section{margin-bottom:1.2rem}
+.help-section h4{color:var(--green);font-size:.9rem;margin-bottom:.6rem;border-bottom:1px solid var(--border);padding-bottom:.3rem}
+.help-row{display:flex;align-items:center;gap:.75rem;padding:.45rem .5rem;border-radius:8px;margin-bottom:.3rem}
+.help-row:nth-child(odd){background:rgba(255,255,255,.03)}
+.help-pts{font-size:1.2rem;font-weight:900;min-width:3rem;text-align:center;flex-shrink:0}
+.help-pts.p5{color:var(--green)}
+.help-pts.p3{color:var(--blue)}
+.help-pts.p2{color:var(--gold)}
+.help-pts.p0{color:var(--red)}
+.help-desc{font-size:.82rem;line-height:1.4}
+.help-desc small{color:var(--muted);display:block;margin-top:.1rem}
+.boost-box{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.3);border-radius:10px;padding:.75rem 1rem}
+.boost-box p{font-size:.82rem;line-height:1.5;color:var(--text)}
+.boost-box p+p{margin-top:.4rem}
+.boost-ex{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:.5rem .75rem;margin-top:.6rem;font-size:.8rem;color:var(--green)}
+.close-btn{width:100%;padding:.7rem;background:var(--gd);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem;margin-top:.25rem}
+
+/* PITCH BG */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.025;background-image:repeating-linear-gradient(0deg,transparent,transparent 60px,#22c55e 60px,#22c55e 62px)}
+
+/* SCROLL BAR */
+::-webkit-scrollbar{height:4px;width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ===================== DATA =====================
+
+const T = {
+  mexico:{n:'מקסיקו',f:'🇲🇽'},south_africa:{n:'דרום אפריקה',f:'🇿🇦'},south_korea:{n:'דרום קוריאה',f:'🇰🇷'},czechia:{n:"צ'כיה",f:'🇨🇿'},
+  canada:{n:'קנדה',f:'🇨🇦'},bosnia:{n:'בוסניה',f:'🇧🇦'},qatar:{n:'קטאר',f:'🇶🇦'},switzerland:{n:'שווייץ',f:'🇨🇭'},
+  brazil:{n:'ברזיל',f:'🇧🇷'},morocco:{n:'מרוקו',f:'🇲🇦'},haiti:{n:'האיטי',f:'🇭🇹'},scotland:{n:'סקוטלנד',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'},
+  usa:{n:'ארה"ב',f:'🇺🇸'},paraguay:{n:'פרגוואי',f:'🇵🇾'},australia:{n:'אוסטרליה',f:'🇦🇺'},turkey:{n:'טורקיה',f:'🇹🇷'},
+  germany:{n:'גרמניה',f:'🇩🇪'},curacao:{n:'קוּרָאסָאו',f:'🇨🇼'},ivory_coast:{n:'חוף השנהב',f:'🇨🇮'},ecuador:{n:'אקוודור',f:'🇪🇨'},
+  netherlands:{n:'הולנד',f:'🇳🇱'},japan:{n:'יפן',f:'🇯🇵'},sweden:{n:'שוודיה',f:'🇸🇪'},tunisia:{n:'תוניסיה',f:'🇹🇳'},
+  belgium:{n:'בלגיה',f:'🇧🇪'},egypt:{n:'מצרים',f:'🇪🇬'},iran:{n:'איראן',f:'🇮🇷'},new_zealand:{n:'ניו זילנד',f:'🇳🇿'},
+  spain:{n:'ספרד',f:'🇪🇸'},cabo_verde:{n:'קאבו ורדה',f:'🇨🇻'},saudi_arabia:{n:'ערב הסעודית',f:'🇸🇦'},uruguay:{n:'אורוגוואי',f:'🇺🇾'},
+  france:{n:'צרפת',f:'🇫🇷'},senegal:{n:'סנגל',f:'🇸🇳'},iraq:{n:'עיראק',f:'🇮🇶'},norway:{n:'נורווגיה',f:'🇳🇴'},
+  argentina:{n:'ארגנטינה',f:'🇦🇷'},algeria:{n:"אלג'יריה",f:'🇩🇿'},austria:{n:'אוסטריה',f:'🇦🇹'},jordan:{n:'ירדן',f:'🇯🇴'},
+  portugal:{n:'פורטוגל',f:'🇵🇹'},dr_congo:{n:'קונגו (DR)',f:'🇨🇩'},uzbekistan:{n:'אוזבקיסטן',f:'🇺🇿'},colombia:{n:'קולומביה',f:'🇨🇴'},
+  england:{n:'אנגליה',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},croatia:{n:'קרואטיה',f:'🇭🇷'},ghana:{n:'גאנה',f:'🇬🇭'},panama:{n:'פנמה',f:'🇵🇦'}
+};
+
+const MATCHES=[
+  // A
+  {id:'A1',g:'A',r:1,d:'2026-06-11',h:'mexico',a:'south_africa',res:{h:2,a:0}},
+  {id:'A2',g:'A',r:1,d:'2026-06-11',h:'south_korea',a:'czechia',res:{h:2,a:1}},
+  {id:'A3',g:'A',r:2,d:'2026-06-19',h:'mexico',a:'south_korea',res:null},
+  {id:'A4',g:'A',r:2,d:'2026-06-19',h:'south_africa',a:'czechia',res:null},
+  {id:'A5',g:'A',r:3,d:'2026-07-01',h:'mexico',a:'czechia',res:null},
+  {id:'A6',g:'A',r:3,d:'2026-07-01',h:'south_africa',a:'south_korea',res:null},
+  // B
+  {id:'B1',g:'B',r:1,d:'2026-06-12',h:'canada',a:'bosnia',res:{h:1,a:1}},
+  {id:'B2',g:'B',r:1,d:'2026-06-12',h:'switzerland',a:'qatar',res:{h:1,a:1}},
+  {id:'B3',g:'B',r:2,d:'2026-06-20',h:'canada',a:'switzerland',res:null},
+  {id:'B4',g:'B',r:2,d:'2026-06-20',h:'bosnia',a:'qatar',res:null},
+  {id:'B5',g:'B',r:3,d:'2026-07-01',h:'canada',a:'qatar',res:null},
+  {id:'B6',g:'B',r:3,d:'2026-07-01',h:'bosnia',a:'switzerland',res:null},
+  // C
+  {id:'C1',g:'C',r:1,d:'2026-06-16',h:'brazil',a:'morocco',res:null},
+  {id:'C2',g:'C',r:1,d:'2026-06-16',h:'haiti',a:'scotland',res:null},
+  {id:'C3',g:'C',r:2,d:'2026-06-21',h:'brazil',a:'haiti',res:null},
+  {id:'C4',g:'C',r:2,d:'2026-06-21',h:'morocco',a:'scotland',res:null},
+  {id:'C5',g:'C',r:3,d:'2026-07-02',h:'brazil',a:'scotland',res:null},
+  {id:'C6',g:'C',r:3,d:'2026-07-02',h:'morocco',a:'haiti',res:null},
+  // D
+  {id:'D1',g:'D',r:1,d:'2026-06-17',h:'usa',a:'paraguay',res:null},
+  {id:'D2',g:'D',r:1,d:'2026-06-17',h:'australia',a:'turkey',res:null},
+  {id:'D3',g:'D',r:2,d:'2026-06-22',h:'usa',a:'australia',res:null},
+  {id:'D4',g:'D',r:2,d:'2026-06-22',h:'paraguay',a:'turkey',res:null},
+  {id:'D5',g:'D',r:3,d:'2026-07-02',h:'usa',a:'turkey',res:null},
+  {id:'D6',g:'D',r:3,d:'2026-07-02',h:'paraguay',a:'australia',res:null},
+  // E
+  {id:'E1',g:'E',r:1,d:'2026-06-13',h:'germany',a:'curacao',res:{h:7,a:1}},
+  {id:'E2',g:'E',r:1,d:'2026-06-13',h:'ivory_coast',a:'ecuador',res:{h:1,a:0}},
+  {id:'E3',g:'E',r:2,d:'2026-06-23',h:'germany',a:'ivory_coast',res:null},
+  {id:'E4',g:'E',r:2,d:'2026-06-23',h:'curacao',a:'ecuador',res:null},
+  {id:'E5',g:'E',r:3,d:'2026-07-03',h:'germany',a:'ecuador',res:null},
+  {id:'E6',g:'E',r:3,d:'2026-07-03',h:'curacao',a:'ivory_coast',res:null},
+  // F
+  {id:'F1',g:'F',r:1,d:'2026-06-13',h:'netherlands',a:'japan',res:{h:2,a:2}},
+  {id:'F2',g:'F',r:1,d:'2026-06-13',h:'sweden',a:'tunisia',res:{h:5,a:1}},
+  {id:'F3',g:'F',r:2,d:'2026-06-24',h:'netherlands',a:'sweden',res:null},
+  {id:'F4',g:'F',r:2,d:'2026-06-24',h:'japan',a:'tunisia',res:null},
+  {id:'F5',g:'F',r:3,d:'2026-07-03',h:'netherlands',a:'tunisia',res:null},
+  {id:'F6',g:'F',r:3,d:'2026-07-03',h:'japan',a:'sweden',res:null},
+  // G
+  {id:'G1',g:'G',r:1,d:'2026-06-14',h:'belgium',a:'egypt',res:{h:1,a:1}},
+  {id:'G2',g:'G',r:1,d:'2026-06-14',h:'iran',a:'new_zealand',res:{h:2,a:2}},
+  {id:'G3',g:'G',r:2,d:'2026-06-25',h:'belgium',a:'iran',res:null},
+  {id:'G4',g:'G',r:2,d:'2026-06-25',h:'egypt',a:'new_zealand',res:null},
+  {id:'G5',g:'G',r:3,d:'2026-07-04',h:'belgium',a:'new_zealand',res:null},
+  {id:'G6',g:'G',r:3,d:'2026-07-04',h:'egypt',a:'iran',res:null},
+  // H
+  {id:'H1',g:'H',r:1,d:'2026-06-14',h:'spain',a:'cabo_verde',res:{h:0,a:0}},
+  {id:'H2',g:'H',r:1,d:'2026-06-14',h:'saudi_arabia',a:'uruguay',res:{h:1,a:1}},
+  {id:'H3',g:'H',r:2,d:'2026-06-26',h:'spain',a:'saudi_arabia',res:null},
+  {id:'H4',g:'H',r:2,d:'2026-06-26',h:'cabo_verde',a:'uruguay',res:null},
+  {id:'H5',g:'H',r:3,d:'2026-07-04',h:'spain',a:'uruguay',res:null},
+  {id:'H6',g:'H',r:3,d:'2026-07-04',h:'cabo_verde',a:'saudi_arabia',res:null},
+  // I
+  {id:'I1',g:'I',r:1,d:'2026-06-15',h:'france',a:'senegal',res:{h:3,a:1}},
+  {id:'I2',g:'I',r:1,d:'2026-06-15',h:'norway',a:'iraq',res:{h:4,a:1}},
+  {id:'I3',g:'I',r:2,d:'2026-06-27',h:'france',a:'norway',res:null},
+  {id:'I4',g:'I',r:2,d:'2026-06-27',h:'senegal',a:'iraq',res:null},
+  {id:'I5',g:'I',r:3,d:'2026-07-05',h:'france',a:'iraq',res:null},
+  {id:'I6',g:'I',r:3,d:'2026-07-05',h:'senegal',a:'norway',res:null},
+  // J
+  {id:'J1',g:'J',r:1,d:'2026-06-15',h:'argentina',a:'algeria',res:{h:3,a:0}},
+  {id:'J2',g:'J',r:1,d:'2026-06-15',h:'austria',a:'jordan',res:{h:3,a:1}},
+  {id:'J3',g:'J',r:2,d:'2026-06-28',h:'argentina',a:'austria',res:null},
+  {id:'J4',g:'J',r:2,d:'2026-06-28',h:'algeria',a:'jordan',res:null},
+  {id:'J5',g:'J',r:3,d:'2026-07-05',h:'argentina',a:'jordan',res:null},
+  {id:'J6',g:'J',r:3,d:'2026-07-05',h:'algeria',a:'austria',res:null},
+  // K
+  {id:'K1',g:'K',r:1,d:'2026-06-15',h:'portugal',a:'dr_congo',res:{h:1,a:1}},
+  {id:'K2',g:'K',r:1,d:'2026-06-15',h:'colombia',a:'uzbekistan',res:{h:3,a:1}},
+  {id:'K3',g:'K',r:2,d:'2026-06-29',h:'portugal',a:'colombia',res:null},
+  {id:'K4',g:'K',r:2,d:'2026-06-29',h:'dr_congo',a:'uzbekistan',res:null},
+  {id:'K5',g:'K',r:3,d:'2026-07-06',h:'portugal',a:'uzbekistan',res:null},
+  {id:'K6',g:'K',r:3,d:'2026-07-06',h:'dr_congo',a:'colombia',res:null},
+  // L
+  {id:'L1',g:'L',r:1,d:'2026-06-16',h:'england',a:'croatia',res:{h:4,a:2}},
+  {id:'L2',g:'L',r:1,d:'2026-06-16',h:'ghana',a:'panama',res:{h:1,a:0}},
+  {id:'L3',g:'L',r:2,d:'2026-06-30',h:'england',a:'ghana',res:null},
+  {id:'L4',g:'L',r:2,d:'2026-06-30',h:'croatia',a:'panama',res:null},
+  {id:'L5',g:'L',r:3,d:'2026-07-06',h:'england',a:'panama',res:null},
+  {id:'L6',g:'L',r:3,d:'2026-07-06',h:'croatia',a:'ghana',res:null},
+];
+
+// ===================== STATE =====================
+
+const SK='wc2026_v3';
+function loadState(){
+  try{const s=localStorage.getItem(SK);if(s)return JSON.parse(s);}catch(e){}
+  return{players:['אור','ליהי','גל','איתי'],preds:{},boosts:[3,3,3,3]};
+}
+function save(){localStorage.setItem(SK,JSON.stringify(S));}
+let S=loadState();
+
+// Temp form values (survive re-render, not page refresh)
+const FV={};
+
+// UI state
+const UI={grp:'ALL',status:'all',editIdx:null,editName:'',showHelp:false};
+
+// ===================== LOGIC =====================
+
+function calcPts(pred,res){
+  if(!pred||!res)return 0;
+  const ph=parseInt(pred.h),pa=parseInt(pred.a);
+  const rh=res.h,ra=res.a;
+  if(isNaN(ph)||isNaN(pa)||ph<0||pa<0)return 0;
+  if(ph===rh&&pa===ra)return 5;
+  const po=ph>pa?'H':ph<pa?'A':'D';
+  const ro=rh>ra?'H':rh<ra?'A':'D';
+  if(po===ro)return ro==='D'?3:2;
+  return 0;
+}
+
+function getBoostsUsed(pi){
+  let u=0;
+  MATCHES.forEach(m=>{const p=S.preds[m.id]?.[pi];if(p&&p.boost)u++;});
+  return u;
+}
+function boostsLeft(pi){return 3-getBoostsUsed(pi);}
+
+function playerTotalPts(pi){
+  let t=0;
+  MATCHES.forEach(m=>{
+    if(!m.res)return;
+    const p=S.preds[m.id]?.[pi];
+    if(!p)return;
+    let pts=calcPts(p,m.res);
+    if(p.boost)pts*=2;
+    t+=pts;
+  });
+  return t;
+}
+
+function leaderboard(){
+  return[0,1,2,3]
+    .map(i=>({i,name:S.players[i],pts:playerTotalPts(i),bl:boostsLeft(i)}))
+    .sort((a,b)=>b.pts-a.pts||(a.i-b.i));
+}
+
+function fmtDate(ds){
+  const d=new Date(ds+'T12:00:00');
+  const days=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const months=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט'];
+  return`${d.getDate()} ${months[d.getMonth()]} (${days[d.getDay()]})`;
+}
+
+// ===================== RENDER =====================
+
+function el(tag,cls){const e=document.createElement(tag);if(cls)e.className=cls;return e;}
+function html(e,s){e.innerHTML=s;return e;}
+
+function render(){
+  const app=document.getElementById('app');
+  app.innerHTML='';
+  app.appendChild(renderHdr());
+  app.appendChild(renderLB());
+  app.appendChild(renderFilters());
+  app.appendChild(renderMatches());
+  if(UI.editIdx!==null)app.appendChild(renderModal());
+  if(UI.showHelp)app.appendChild(renderHelpModal());
+}
+
+function renderHdr(){
+  const d=el('div','hdr');
+  d.innerHTML=`
+    <div class="hdr-top">
+      <h1>🏆 מונדיאל FIFA 2026</h1>
+      <button class="info-btn" onclick="UI.showHelp=true;render();" title="הסבר ניקוד ובוסט">?</button>
+    </div>
+    <div class="sub">משחק ניחושים משפחתי ⚽</div>
+  `;
+  return d;
+}
+
+function renderLB(){
+  const lb=el('div','lb');
+  html(el('div','lb-title'),'🏅 לוח מובילים').appendTo?lb.appendChild(lb):lb.appendChild(html(el('div','lb-title'),'🏅 לוח מובילים'));
+  const board=leaderboard();
+  board.forEach((p,rank)=>{
+    const row=el('div','lb-row'+(rank===0?' leader':''));
+    const rkCls=['r1','r2','r3',''][Math.min(rank,3)];
+    const rankIco=rank===0?'👑':`${rank+1}`;
+    const boostStr='⚡'.repeat(p.bl)+(p.bl<3?'<span style="opacity:.25">⚡</span>'.repeat(3-p.bl):'');
+    row.innerHTML=`
+      <div class="rank ${rkCls}">${rankIco}</div>
+      <div class="pname">${esc(p.name)}</div>
+      <button class="edit-btn" onclick="openEdit(${p.i})">✏️ שם</button>
+      <div class="boosts-disp" title="${p.bl} כרטיסי בוסט נותרים">${boostStr}</div>
+      <div class="ppts">${p.pts} נק'</div>
+    `;
+    lb.appendChild(row);
+  });
+  return lb;
+}
+
+function renderFilters(){
+  const f=el('div','filters');
+  // Group tabs
+  const gt=el('div','gtabs');
+  const allG=el('button','gtab'+(UI.grp==='ALL'?' active':''));
+  allG.textContent='הכל';allG.onclick=()=>{UI.grp='ALL';render();};
+  gt.appendChild(allG);
+  'ABCDEFGHIJKL'.split('').forEach(g=>{
+    const t=el('button','gtab'+(UI.grp===g?' active':''));
+    t.textContent=`קב' ${g}`;t.onclick=()=>{UI.grp=g;render();};
+    gt.appendChild(t);
+  });
+  // Status tabs
+  const st=el('div','stabs');
+  [['all','📋 הכל'],['played','✅ שוחקו'],['upcoming','⏳ קרובות']].forEach(([v,l])=>{
+    const t=el('button','stab'+(UI.status===v?' active':''));
+    t.textContent=l;t.onclick=()=>{UI.status=v;render();};
+    st.appendChild(t);
+  });
+  f.appendChild(gt);f.appendChild(st);
+  return f;
+}
+
+function renderMatches(){
+  const mc=el('div','mc');
+  let filtered=MATCHES.filter(m=>{
+    if(UI.grp!=='ALL'&&m.g!==UI.grp)return false;
+    if(UI.status==='played'&&!m.res)return false;
+    if(UI.status==='upcoming'&&m.res)return false;
+    return true;
+  });
+  if(!filtered.length){
+    const e=el('div','empty');
+    e.innerHTML='<div class="ico">⚽</div><div>אין משחקים להצגה</div>';
+    mc.appendChild(e);return mc;
+  }
+  if(UI.grp==='ALL'){
+    const byG={};
+    filtered.forEach(m=>{if(!byG[m.g])byG[m.g]=[];byG[m.g].push(m);});
+    Object.keys(byG).sort().forEach(g=>{
+      const hdr=el('div','gsec-hdr');
+      hdr.innerHTML=`⚽ קבוצה ${g}`;
+      mc.appendChild(hdr);
+      byG[g].forEach(m=>mc.appendChild(renderCard(m)));
+    });
+  }else{
+    filtered.forEach(m=>mc.appendChild(renderCard(m)));
+  }
+  return mc;
+}
+
+function renderCard(m){
+  const card=el('div','mcard');
+  const ht=T[m.h],at=T[m.a];
+  const played=!!m.res;
+  // Header
+  card.innerHTML=`
+    <div class="mhdr">
+      <div class="mmeta">
+        <span class="gbadge">קב' ${m.g}</span>
+        <span>סיבוב ${m.r}</span>
+        <span>${fmtDate(m.d)}</span>
+      </div>
+      <span class="sbadge ${played?'played':'upcoming'}">${played?'✅ שוחק':'⏳ קרוב'}</span>
+    </div>
+  `;
+  // Teams
+  const tr=el('div','trow');
+  tr.innerHTML=`
+    <div class="team">
+      <div class="tflag">${ht.f}</div>
+      <div class="tname">${ht.n}</div>
+    </div>
+    <div class="score-box">
+      ${played
+        ?`<div class="score-nums"><span>${m.res.h}</span><span class="score-sep">-</span><span>${m.res.a}</span></div>`
+        :`<div class="vs-txt">נגד</div>`
+      }
+    </div>
+    <div class="team">
+      <div class="tflag">${at.f}</div>
+      <div class="tname">${at.n}</div>
+    </div>
+  `;
+  card.appendChild(tr);
+  // Predictions
+  const ps=el('div','psec');
+  const pg=el('div','pgrid');
+  [0,1,2,3].forEach(pi=>{
+    if(played){pg.appendChild(renderPlayedPred(m,pi));}
+    else{pg.appendChild(renderFormPred(m,pi));}
+  });
+  ps.appendChild(pg);
+  card.appendChild(ps);
+  return card;
+}
+
+function renderPlayedPred(m,pi){
+  const pred=S.preds[m.id]?.[pi];
+  const pts=calcPts(pred,m.res);
+  const final=pred&&pred.boost?pts*2:pts;
+  const hasPred=pred&&pred.h!==undefined&&pred.h!==null&&pred.a!==undefined&&pred.a!==null;
+  const pstr=hasPred?`${pred.h} - ${pred.a}`:'לא ניחש';
+  let pCls='zero';
+  if(pts===5)pCls='exact';
+  else if(pts===3)pCls='draw';
+  else if(pts===2)pCls='win';
+  const item=el('div','pitem'+(pred&&pred.boost?' boosted':''));
+  item.innerHTML=`
+    <div class="pplayername">${esc(S.players[pi])}${pred&&pred.boost?' ⚡':''}</div>
+    <div class="psc">${pstr}</div>
+    <div class="ppts ${pCls}">${hasPred?(final>0?`+${final} נק'${pred&&pred.boost?' (×2⚡)':''}`:'0 נקודות'):'—'}</div>
+  `;
+  return item;
+}
+
+function renderFormPred(m,pi){
+  const fvk=`${m.id}_${pi}`;
+  const saved=S.preds[m.id]?.[pi]||{};
+  const fv=FV[fvk]||{};
+  const hv=fv.h!==undefined?fv.h:(saved.h!==undefined?saved.h:'');
+  const av=fv.a!==undefined?fv.a:(saved.a!==undefined?saved.a:'');
+  const isBoosted=saved.boost||false;
+  const bl=boostsLeft(pi);
+  const canBoost=isBoosted||bl>0;
+  const item=el('div','pitem'+(isBoosted?' boosted':''));
+  const form=el('div','pform');
+  // Name + boost info
+  const nameRow=el('div','pform-name');
+  nameRow.innerHTML=`<span>${esc(S.players[pi])}</span><span class="boost-info">⚡ ${bl} נותרים</span>`;
+  // Score row
+  const sr=el('div','score-inp-row');
+  sr.innerHTML=`
+    <div class="sc-ctrl">
+      <button class="sc-btn" onclick="adj('${m.id}',${pi},'h',1)" tabindex="-1">+</button>
+      <input class="sc-num" type="number" id="inp_${m.id}_${pi}_h" min="0" max="20" value="${hv}" placeholder="0" oninput="fvUpdate('${m.id}',${pi},'h',this.value)">
+      <button class="sc-btn" onclick="adj('${m.id}',${pi},'h',-1)" tabindex="-1">−</button>
+    </div>
+    <span class="sc-sep">-</span>
+    <div class="sc-ctrl">
+      <button class="sc-btn" onclick="adj('${m.id}',${pi},'a',1)" tabindex="-1">+</button>
+      <input class="sc-num" type="number" id="inp_${m.id}_${pi}_a" min="0" max="20" value="${av}" placeholder="0" oninput="fvUpdate('${m.id}',${pi},'a',this.value)">
+      <button class="sc-btn" onclick="adj('${m.id}',${pi},'a',-1)" tabindex="-1">−</button>
+    </div>
+  `;
+  // Actions
+  const acts=el('div','form-actions');
+  const boostBtn=el('button','boost-btn'+(isBoosted?' active':''));
+  boostBtn.innerHTML=`⚡${isBoosted?' בוסט ✓':' בוסט'}`;
+  boostBtn.disabled=!canBoost;
+  boostBtn.title=isBoosted?'בטל בוסט':(canBoost?`בוסט: מכפיל נקודות! (${bl} נותרים)`:'אין כרטיסי בוסט');
+  boostBtn.onclick=()=>toggleBoost(m.id,pi);
+  const saveBtn=el('button','save-btn');
+  saveBtn.id=`sbtn_${m.id}_${pi}`;
+  saveBtn.textContent='שמור';
+  saveBtn.onclick=()=>savePred(m.id,pi,saveBtn);
+  acts.appendChild(boostBtn);acts.appendChild(saveBtn);
+  form.appendChild(nameRow);form.appendChild(sr);form.appendChild(acts);
+  item.appendChild(form);
+  return item;
+}
+
+function renderHelpModal(){
+  const ov=el('div','modal-ov');
+  ov.onclick=e=>{if(e.target===ov){UI.showHelp=false;render();}};
+  const modal=el('div','modal help-modal');
+  modal.innerHTML=`
+    <h3>📖 איך מנצחים?</h3>
+
+    <div class="help-section">
+      <h4>⚽ שיטת הניקוד</h4>
+      <div class="help-row">
+        <div class="help-pts p5">5</div>
+        <div class="help-desc">
+          <strong>תוצאה מדויקת!</strong>
+          <small>ניחשת בדיוק את שני המספרים — הכי שווה!</small>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-pts p3">3</div>
+        <div class="help-desc">
+          <strong>תיקו נכון</strong>
+          <small>ניחשת תיקו — המשחק הסתיים בתיקו, אבל המספרים שגויים</small>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-pts p2">2</div>
+        <div class="help-desc">
+          <strong>מנצח נכון</strong>
+          <small>ניחשת מי מנצח — אבל לא את התוצאה המדויקת</small>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-pts p0">0</div>
+        <div class="help-desc">
+          <strong>ניחוש שגוי</strong>
+          <small>לא ניחשת לא מנצח ולא תיקו</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <h4>⚡ כרטיס בוסט — מה זה?</h4>
+      <div class="boost-box">
+        <p>🃏 כל שחקן מקבל <strong>3 כרטיסי בוסט</strong> לכל שלב הבתים (72 משחקים).</p>
+        <p>🚀 כשמשתמשים בבוסט על משחק — הנקודות שמרוויחים <strong>מוכפלות ×2</strong>!</p>
+        <p>⚠️ אם ניחשת לא נכון + בוסט — 0×2 = עדיין 0. בחר חכם!</p>
+        <div class="boost-ex">
+          💡 דוגמה: ניחשת תוצאה מדויקת + בוסט = <strong>5 × 2 = 10 נקודות</strong> 🎉
+        </div>
+        <div class="boost-ex" style="margin-top:.4rem;background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.25);color:var(--blue)">
+          💡 דוגמה: ניחשת מנצח נכון + בוסט = <strong>2 × 2 = 4 נקודות</strong>
+        </div>
+      </div>
+    </div>
+
+    <button class="close-btn" onclick="UI.showHelp=false;render();">הבנתי! 🙌</button>
+  `;
+  ov.appendChild(modal);
+  return ov;
+}
+
+function renderModal(){
+  const ov=el('div','modal-ov');
+  ov.onclick=e=>{if(e.target===ov){UI.editIdx=null;render();}};
+  const modal=el('div','modal');
+  modal.innerHTML=`<h3>✏️ ערוך שם שחקן</h3>`;
+  const inp=el('input','');
+  inp.type='text';inp.value=UI.editName;inp.placeholder='שם השחקן';inp.maxLength=20;
+  inp.oninput=e=>UI.editName=e.target.value;
+  inp.onkeydown=e=>{if(e.key==='Enter')doSaveName();};
+  const acts=el('div','modal-acts');
+  const ok=el('button','btn-p');ok.textContent='שמור שם';ok.onclick=doSaveName;
+  const cancel=el('button','btn-s');cancel.textContent='ביטול';cancel.onclick=()=>{UI.editIdx=null;render();};
+  acts.appendChild(ok);acts.appendChild(cancel);
+  modal.appendChild(inp);modal.appendChild(acts);
+  ov.appendChild(modal);
+  setTimeout(()=>inp.focus(),40);
+  return ov;
+}
+
+// ===================== EVENTS =====================
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function openEdit(i){UI.editIdx=i;UI.editName=S.players[i];render();}
+function doSaveName(){
+  const n=UI.editName.trim();
+  if(n){S.players[UI.editIdx]=n;save();}
+  UI.editIdx=null;render();
+}
+
+function fvUpdate(mid,pi,side,val){
+  const k=`${mid}_${pi}`;
+  if(!FV[k])FV[k]={};
+  const v=parseInt(val);
+  FV[k][side]=isNaN(v)?'':Math.max(0,v);
+}
+
+function adj(mid,pi,side,delta){
+  const k=`${mid}_${pi}`;
+  const inp=document.getElementById(`inp_${mid}_${pi}_${side}`);
+  if(!inp)return;
+  const cur=parseInt(inp.value)||0;
+  const nv=Math.max(0,Math.min(20,cur+delta));
+  inp.value=nv;
+  if(!FV[k])FV[k]={};
+  FV[k][side]=nv;
+}
+
+function savePred(mid,pi,btn){
+  const k=`${mid}_${pi}`;
+  const fv=FV[k]||{};
+  const saved=S.preds[mid]?.[pi]||{};
+  const hRaw=fv.h!==undefined?fv.h:saved.h;
+  const aRaw=fv.a!==undefined?fv.a:saved.a;
+  const hv=parseInt(hRaw);
+  const av=parseInt(aRaw);
+  if(isNaN(hv)||isNaN(av)||hv<0||av<0){
+    btn.textContent='⚠️ הכנס תוצאה';
+    setTimeout(()=>{btn.textContent='שמור';},1200);
+    return;
+  }
+  if(!S.preds[mid])S.preds[mid]={};
+  S.preds[mid][pi]={h:hv,a:av,boost:saved.boost||false};
+  delete FV[k];
+  save();
+  btn.textContent='✅ נשמר!';
+  btn.classList.add('saved');
+  setTimeout(()=>{btn.textContent='שמור';btn.classList.remove('saved');},1200);
+}
+
+function toggleBoost(mid,pi){
+  if(!S.preds[mid])S.preds[mid]={};
+  if(!S.preds[mid][pi])S.preds[mid][pi]={};
+  const cur=S.preds[mid][pi].boost||false;
+  if(!cur&&boostsLeft(pi)<=0)return;
+  S.preds[mid][pi].boost=!cur;
+  save();render();
+}
+
+// ===================== INIT =====================
+render();
+</script>
+</body>
+</html>
