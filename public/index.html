@@ -327,6 +327,8 @@ function leaderboard(){
     .sort((a,b)=>b.pts-a.pts||(a.i-b.i));
 }
 
+function isPast(ds){return new Date(ds+'T23:59:59')<new Date();}
+
 function fmtDate(ds){
   const d=new Date(ds+'T12:00:00');
   const days=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
@@ -410,8 +412,8 @@ function renderMatches(){
   const mc=el('div','mc');
   let filtered=MATCHES.filter(m=>{
     if(UI.grp!=='ALL'&&m.g!==UI.grp)return false;
-    if(UI.status==='played'&&!m.res)return false;
-    if(UI.status==='upcoming'&&m.res)return false;
+    if(UI.status==='played'&&!m.res&&!isPast(m.d))return false;
+    if(UI.status==='upcoming'&&(m.res||isPast(m.d)))return false;
     return true;
   });
   if(!filtered.length){
@@ -437,7 +439,10 @@ function renderMatches(){
 function renderCard(m){
   const card=el('div','mcard');
   const ht=T[m.h],at=T[m.a];
+  const locked=!!m.res||isPast(m.d);
   const played=!!m.res;
+  const badge=played?'✅ שוחק':locked?'🔒 נעול':'⏳ קרוב';
+  const badgeCls=played?'played':locked?'played':'upcoming';
   // Header
   card.innerHTML=`
     <div class="mhdr">
@@ -446,7 +451,7 @@ function renderCard(m){
         <span>סיבוב ${m.r}</span>
         <span>${fmtDate(m.d)}</span>
       </div>
-      <span class="sbadge ${played?'played':'upcoming'}">${played?'✅ שוחק':'⏳ קרוב'}</span>
+      <span class="sbadge ${badgeCls}">${badge}</span>
     </div>
   `;
   // Teams
@@ -459,6 +464,7 @@ function renderCard(m){
     <div class="score-box">
       ${played
         ?`<div class="score-nums"><span>${m.res.h}</span><span class="score-sep">-</span><span>${m.res.a}</span></div>`
+        :locked?`<div class="vs-txt" style="color:var(--muted);font-size:1.3rem">🔒</div>`
         :`<div class="vs-txt">נגד</div>`
       }
     </div>
@@ -472,7 +478,7 @@ function renderCard(m){
   const ps=el('div','psec');
   const pg=el('div','pgrid');
   [0,1,2,3].forEach(pi=>{
-    if(played){pg.appendChild(renderPlayedPred(m,pi));}
+    if(locked){pg.appendChild(renderPlayedPred(m,pi));}
     else{pg.appendChild(renderFormPred(m,pi));}
   });
   ps.appendChild(pg);
