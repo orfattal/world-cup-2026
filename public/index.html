@@ -173,15 +173,15 @@ const T = {
 
 const MATCHES=[
   // A
-  {id:'A1',g:'A',r:1,d:'2026-06-11',h:'mexico',a:'south_africa',res:{h:2,a:0}},
-  {id:'A2',g:'A',r:1,d:'2026-06-11',h:'south_korea',a:'czechia',res:{h:2,a:1}},
+  {id:'A1',g:'A',r:1,d:'2026-06-11',h:'mexico',a:'south_africa',res:null},
+  {id:'A2',g:'A',r:1,d:'2026-06-11',h:'south_korea',a:'czechia',res:null},
   {id:'A3',g:'A',r:2,d:'2026-06-19',h:'mexico',a:'south_korea',res:null},
   {id:'A4',g:'A',r:2,d:'2026-06-19',h:'south_africa',a:'czechia',res:null},
   {id:'A5',g:'A',r:3,d:'2026-07-01',h:'mexico',a:'czechia',res:null},
   {id:'A6',g:'A',r:3,d:'2026-07-01',h:'south_africa',a:'south_korea',res:null},
   // B
-  {id:'B1',g:'B',r:1,d:'2026-06-12',h:'canada',a:'bosnia',res:{h:1,a:1}},
-  {id:'B2',g:'B',r:1,d:'2026-06-12',h:'switzerland',a:'qatar',res:{h:1,a:1}},
+  {id:'B1',g:'B',r:1,d:'2026-06-12',h:'canada',a:'bosnia',res:null},
+  {id:'B2',g:'B',r:1,d:'2026-06-12',h:'switzerland',a:'qatar',res:null},
   {id:'B3',g:'B',r:2,d:'2026-06-20',h:'canada',a:'switzerland',res:null},
   {id:'B4',g:'B',r:2,d:'2026-06-20',h:'bosnia',a:'qatar',res:null},
   {id:'B5',g:'B',r:3,d:'2026-07-01',h:'canada',a:'qatar',res:null},
@@ -201,57 +201,57 @@ const MATCHES=[
   {id:'D5',g:'D',r:3,d:'2026-07-02',h:'usa',a:'turkey',res:null},
   {id:'D6',g:'D',r:3,d:'2026-07-02',h:'paraguay',a:'australia',res:null},
   // E
-  {id:'E1',g:'E',r:1,d:'2026-06-13',h:'germany',a:'curacao',res:{h:7,a:1}},
-  {id:'E2',g:'E',r:1,d:'2026-06-13',h:'ivory_coast',a:'ecuador',res:{h:1,a:0}},
+  {id:'E1',g:'E',r:1,d:'2026-06-13',h:'germany',a:'curacao',res:null},
+  {id:'E2',g:'E',r:1,d:'2026-06-13',h:'ivory_coast',a:'ecuador',res:null},
   {id:'E3',g:'E',r:2,d:'2026-06-23',h:'germany',a:'ivory_coast',res:null},
   {id:'E4',g:'E',r:2,d:'2026-06-23',h:'curacao',a:'ecuador',res:null},
   {id:'E5',g:'E',r:3,d:'2026-07-03',h:'germany',a:'ecuador',res:null},
   {id:'E6',g:'E',r:3,d:'2026-07-03',h:'curacao',a:'ivory_coast',res:null},
   // F
-  {id:'F1',g:'F',r:1,d:'2026-06-13',h:'netherlands',a:'japan',res:{h:2,a:2}},
-  {id:'F2',g:'F',r:1,d:'2026-06-13',h:'sweden',a:'tunisia',res:{h:5,a:1}},
+  {id:'F1',g:'F',r:1,d:'2026-06-13',h:'netherlands',a:'japan',res:null},
+  {id:'F2',g:'F',r:1,d:'2026-06-13',h:'sweden',a:'tunisia',res:null},
   {id:'F3',g:'F',r:2,d:'2026-06-24',h:'netherlands',a:'sweden',res:null},
   {id:'F4',g:'F',r:2,d:'2026-06-24',h:'japan',a:'tunisia',res:null},
   {id:'F5',g:'F',r:3,d:'2026-07-03',h:'netherlands',a:'tunisia',res:null},
   {id:'F6',g:'F',r:3,d:'2026-07-03',h:'japan',a:'sweden',res:null},
   // G
-  {id:'G1',g:'G',r:1,d:'2026-06-14',h:'belgium',a:'egypt',res:{h:1,a:1}},
-  {id:'G2',g:'G',r:1,d:'2026-06-14',h:'iran',a:'new_zealand',res:{h:2,a:2}},
+  {id:'G1',g:'G',r:1,d:'2026-06-14',h:'belgium',a:'egypt',res:null},
+  {id:'G2',g:'G',r:1,d:'2026-06-14',h:'iran',a:'new_zealand',res:null},
   {id:'G3',g:'G',r:2,d:'2026-06-25',h:'belgium',a:'iran',res:null},
   {id:'G4',g:'G',r:2,d:'2026-06-25',h:'egypt',a:'new_zealand',res:null},
   {id:'G5',g:'G',r:3,d:'2026-07-04',h:'belgium',a:'new_zealand',res:null},
   {id:'G6',g:'G',r:3,d:'2026-07-04',h:'egypt',a:'iran',res:null},
   // H
-  {id:'H1',g:'H',r:1,d:'2026-06-14',h:'spain',a:'cabo_verde',res:{h:0,a:0}},
-  {id:'H2',g:'H',r:1,d:'2026-06-14',h:'saudi_arabia',a:'uruguay',res:{h:1,a:1}},
+  {id:'H1',g:'H',r:1,d:'2026-06-14',h:'spain',a:'cabo_verde',res:null},
+  {id:'H2',g:'H',r:1,d:'2026-06-14',h:'saudi_arabia',a:'uruguay',res:null},
   {id:'H3',g:'H',r:2,d:'2026-06-26',h:'spain',a:'saudi_arabia',res:null},
   {id:'H4',g:'H',r:2,d:'2026-06-26',h:'cabo_verde',a:'uruguay',res:null},
   {id:'H5',g:'H',r:3,d:'2026-07-04',h:'spain',a:'uruguay',res:null},
   {id:'H6',g:'H',r:3,d:'2026-07-04',h:'cabo_verde',a:'saudi_arabia',res:null},
   // I
-  {id:'I1',g:'I',r:1,d:'2026-06-15',h:'france',a:'senegal',res:{h:3,a:1}},
-  {id:'I2',g:'I',r:1,d:'2026-06-15',h:'norway',a:'iraq',res:{h:4,a:1}},
+  {id:'I1',g:'I',r:1,d:'2026-06-15',h:'france',a:'senegal',res:null},
+  {id:'I2',g:'I',r:1,d:'2026-06-15',h:'norway',a:'iraq',res:null},
   {id:'I3',g:'I',r:2,d:'2026-06-27',h:'france',a:'norway',res:null},
   {id:'I4',g:'I',r:2,d:'2026-06-27',h:'senegal',a:'iraq',res:null},
   {id:'I5',g:'I',r:3,d:'2026-07-05',h:'france',a:'iraq',res:null},
   {id:'I6',g:'I',r:3,d:'2026-07-05',h:'senegal',a:'norway',res:null},
   // J
-  {id:'J1',g:'J',r:1,d:'2026-06-15',h:'argentina',a:'algeria',res:{h:3,a:0}},
-  {id:'J2',g:'J',r:1,d:'2026-06-15',h:'austria',a:'jordan',res:{h:3,a:1}},
+  {id:'J1',g:'J',r:1,d:'2026-06-15',h:'argentina',a:'algeria',res:null},
+  {id:'J2',g:'J',r:1,d:'2026-06-15',h:'austria',a:'jordan',res:null},
   {id:'J3',g:'J',r:2,d:'2026-06-28',h:'argentina',a:'austria',res:null},
   {id:'J4',g:'J',r:2,d:'2026-06-28',h:'algeria',a:'jordan',res:null},
   {id:'J5',g:'J',r:3,d:'2026-07-05',h:'argentina',a:'jordan',res:null},
   {id:'J6',g:'J',r:3,d:'2026-07-05',h:'algeria',a:'austria',res:null},
   // K
-  {id:'K1',g:'K',r:1,d:'2026-06-15',h:'portugal',a:'dr_congo',res:{h:1,a:1}},
-  {id:'K2',g:'K',r:1,d:'2026-06-15',h:'colombia',a:'uzbekistan',res:{h:3,a:1}},
+  {id:'K1',g:'K',r:1,d:'2026-06-15',h:'portugal',a:'dr_congo',res:null},
+  {id:'K2',g:'K',r:1,d:'2026-06-15',h:'colombia',a:'uzbekistan',res:null},
   {id:'K3',g:'K',r:2,d:'2026-06-29',h:'portugal',a:'colombia',res:null},
   {id:'K4',g:'K',r:2,d:'2026-06-29',h:'dr_congo',a:'uzbekistan',res:null},
   {id:'K5',g:'K',r:3,d:'2026-07-06',h:'portugal',a:'uzbekistan',res:null},
   {id:'K6',g:'K',r:3,d:'2026-07-06',h:'dr_congo',a:'colombia',res:null},
   // L
-  {id:'L1',g:'L',r:1,d:'2026-06-16',h:'england',a:'croatia',res:{h:4,a:2}},
-  {id:'L2',g:'L',r:1,d:'2026-06-16',h:'ghana',a:'panama',res:{h:1,a:0}},
+  {id:'L1',g:'L',r:1,d:'2026-06-16',h:'england',a:'croatia',res:null},
+  {id:'L2',g:'L',r:1,d:'2026-06-16',h:'ghana',a:'panama',res:null},
   {id:'L3',g:'L',r:2,d:'2026-06-30',h:'england',a:'ghana',res:null},
   {id:'L4',g:'L',r:2,d:'2026-06-30',h:'croatia',a:'panama',res:null},
   {id:'L5',g:'L',r:3,d:'2026-07-06',h:'england',a:'panama',res:null},
@@ -260,13 +260,26 @@ const MATCHES=[
 
 // ===================== STATE =====================
 
-const SK='wc2026_v3';
-function loadState(){
-  try{const s=localStorage.getItem(SK);if(s)return JSON.parse(s);}catch(e){}
-  return{players:['אור','ליהי','גל','איתי'],preds:{},boosts:[3,3,3,3]};
+let S=null;
+
+async function save(){
+  if(!S)return;
+  try{await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)});}catch(e){}
 }
-function save(){localStorage.setItem(SK,JSON.stringify(S));}
-let S=loadState();
+
+async function syncResults(){
+  try{
+    const r=await fetch('/api/results');
+    if(!r.ok)return false;
+    const res=await r.json();
+    let changed=false;
+    MATCHES.forEach(m=>{
+      const v=res[`${m.h}_${m.a}`]||null;
+      if(JSON.stringify(m.res)!==JSON.stringify(v)){m.res=v;changed=true;}
+    });
+    return changed;
+  }catch(e){return false;}
+}
 
 // Temp form values (survive re-render, not page refresh)
 const FV={};
@@ -672,7 +685,14 @@ function toggleBoost(mid,pi){
 }
 
 // ===================== INIT =====================
-render();
+(async()=>{
+  document.getElementById('app').innerHTML='<div style="text-align:center;padding:4rem 1rem;color:#94a3b8;font-size:1.1rem">⚽ טוען...</div>';
+  try{const r=await fetch('/api/state');if(r.ok)S=await r.json();}catch(e){}
+  if(!S)S={players:['אור','ליהי','גל','איתי'],preds:{}};
+  await syncResults();
+  render();
+  setInterval(async()=>{if(await syncResults())render();},60000);
+})();
 </script>
 </body>
 </html>
